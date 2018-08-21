@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
-import com.lfyt.mobile.android.frameworkmvp.archtecture.mvp.view.ActivityViewMVP;
+import com.lfyt.mobile.android.frameworkmvp.archtecture.mvp.view.implementation.ActivityView;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import javax.inject.Inject;
  * Created by rafael on 30/10/17.
  */
 
-public abstract class AndroidActivityViewMVP extends ActivityViewMVP {
+public abstract class AndroidActivityView extends ActivityView {
 
     @Inject
     PermissionAPI permissionAPI;
@@ -50,7 +50,7 @@ public abstract class AndroidActivityViewMVP extends ActivityViewMVP {
         @Subscribe
         public void onRequestPermissionEvent(PermissionAPI.RequestPermissionEvent event){
             ActivityCompat.requestPermissions(
-                    AndroidActivityViewMVP.this,
+                    AndroidActivityView.this,
                     new String[]{event.getPermissionType().getPermission()},
                     event.getPermissionType().getRequestCode()
             );
@@ -60,7 +60,7 @@ public abstract class AndroidActivityViewMVP extends ActivityViewMVP {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionAPI.onRequestPermissionResult(this, requestCode, grantResults);
+        permissionAPI.onRequestPermissionResult(requestCode, grantResults);
     }
 
 

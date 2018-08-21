@@ -1,14 +1,13 @@
 package com.lfyt.mobile.android.activity;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.lfyt.mobile.android.frameworkmvp.archtecture.L;
 import com.lfyt.mobile.android.livemodel.Event;
 import com.lfyt.mobile.android.livemodel.LiveModel;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * This class control the onServiceStarted of new activities
@@ -20,12 +19,61 @@ import javax.inject.Singleton;
  *
  * ActivityResultEvent => Event when an activity returns an result
  */
-@Singleton
-public class ActivityAPI extends LiveModel {
+public class ActivityAPI extends LiveModel implements Application.ActivityLifecycleCallbacks {
 
-	@Inject
-	public ActivityAPI(){
+
+	public ActivityAPI(Application application){
 		L.DI(this);
+		application.registerActivityLifecycleCallbacks(this);
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Activity Lifecycle
+	///////////////////////////////////////////////////////////////////////////
+
+	private int startedActivities;
+
+	Activity currentActivity;
+
+	@Override
+	public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+	}
+
+	@Override
+	public void onActivityStarted(Activity activity) {
+		startedActivities++;
+		currentActivity = activity;
+	}
+
+	@Override
+	public void onActivityResumed(Activity activity) {
+	}
+
+	@Override
+	public void onActivityPaused(Activity activity) {
+	}
+
+	@Override
+	public void onActivityStopped(Activity activity) {
+		startedActivities--;
+
+		if( startedActivities == 0) currentActivity = null;
+	}
+
+	@Override
+	public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+	}
+
+	@Override
+	public void onActivityDestroyed(Activity activity) {
+
+	}
+
+	public Activity getCurrentActivity() {
+		return currentActivity;
 	}
 
 	//##################################################

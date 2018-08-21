@@ -2,13 +2,14 @@ package com.lfyt.mobile.android.activity;
 
 import android.support.v4.app.Fragment;
 
-import com.lfyt.mobile.android.frameworkmvp.archtecture.mvp.view.BaseView;
+import com.lfyt.mobile.android.frameworkmvp.archtecture.mvp.view.ViewContract;
+
 
 /**
  * Created by rafaeljuliao on 11/05/18.
  */
 
-public abstract class FragmentAndroidActivityViewMVP extends AndroidActivityViewMVP implements BaseView {
+public abstract class FragmentAndroidActivityView extends AndroidActivityView implements ViewContract {
 	
 	@Override
 	public int getLayout() {

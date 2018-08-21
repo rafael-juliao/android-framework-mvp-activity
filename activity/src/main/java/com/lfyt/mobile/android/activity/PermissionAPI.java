@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -17,10 +18,6 @@ import com.lfyt.mobile.android.livemodel.LiveModel;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-@Singleton
 public class PermissionAPI extends LiveModel {
 	
 	
@@ -28,10 +25,11 @@ public class PermissionAPI extends LiveModel {
 	private final SharedPreferences sharedPreferences;
 	
 	private final Map<String, Boolean> permissionNeverAsk;
+    private final ActivityAPI activityAPI;
 
-	@Inject
-	public PermissionAPI(Context context) {
-		L.DI(this);
+	public PermissionAPI(ActivityAPI activityAPI, Context context) {
+        this.activityAPI = activityAPI;
+        L.DI(this);
 		this.context = context;
 		
 		sharedPreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
@@ -219,7 +217,7 @@ public class PermissionAPI extends LiveModel {
 	// Permission Response Handling
 	///////////////////////////////////////////////////////////////////////////
 
-    public void onRequestPermissionResult(Activity activity, int requestCode, int[] grantResults) {
+    public void onRequestPermissionResult(int requestCode, int[] grantResults) {
 	   
 		for( PermissionType permissionType : PermissionType.values() ){
 			
@@ -241,7 +239,7 @@ public class PermissionAPI extends LiveModel {
 				else{
 					
 					//If it was denied, and i should not explain, means NEVER ASK is TRUE
-					if( !shouldExplainBeforeAsk(permissionType, activity) ){
+					if( !shouldExplainBeforeAsk(permissionType, activityAPI.currentActivity) ){
 						L.I(this, "Permission %s ==> DENIED + NEVER ASK", permissionType.getPermission());
 						permissionNeverAsk.put(permissionType.name(), true);
 						save();

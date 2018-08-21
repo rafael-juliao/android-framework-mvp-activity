@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.lfyt.mobile.android.frameworkmvp.archtecture.L;
+import com.lfyt.mobile.android.frameworkmvp.archtecture.application.ActivityLifecycleAPI;
 import com.lfyt.mobile.android.livemodel.Event;
 import com.lfyt.mobile.android.livemodel.LiveModel;
 
@@ -25,10 +26,10 @@ public class PermissionAPI extends LiveModel {
 	private final SharedPreferences sharedPreferences;
 	
 	private final Map<String, Boolean> permissionNeverAsk;
-    private final ActivityAPI activityAPI;
+	private final ActivityLifecycleAPI activityLifecycleAPI;
 
-	public PermissionAPI(ActivityAPI activityAPI, Context context) {
-        this.activityAPI = activityAPI;
+	public PermissionAPI(ActivityLifecycleAPI activityLifecycleAPI, Context context) {
+        this.activityLifecycleAPI = activityLifecycleAPI;
         L.DI(this);
 		this.context = context;
 		
@@ -239,7 +240,7 @@ public class PermissionAPI extends LiveModel {
 				else{
 					
 					//If it was denied, and i should not explain, means NEVER ASK is TRUE
-					if( !shouldExplainBeforeAsk(permissionType, activityAPI.currentActivity) ){
+					if( !shouldExplainBeforeAsk(permissionType, activityLifecycleAPI.getCurrentActivity()) ){
 						L.I(this, "Permission %s ==> DENIED + NEVER ASK", permissionType.getPermission());
 						permissionNeverAsk.put(permissionType.name(), true);
 						save();

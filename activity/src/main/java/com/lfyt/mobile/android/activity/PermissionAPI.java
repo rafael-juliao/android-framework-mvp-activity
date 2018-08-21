@@ -2,6 +2,7 @@ package com.lfyt.mobile.android.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,8 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.lfyt.mobile.android.frameworkmvp.archtecture.L;
-import com.lfyt.mobile.android.frameworkmvp.models.application.ActivityLifecycleAPI;
-import com.lfyt.mobile.android.frameworkmvp.models.util.VersionAPI;
 import com.lfyt.mobile.android.livemodel.Event;
 import com.lfyt.mobile.android.livemodel.LiveModel;
 
@@ -26,16 +25,14 @@ public class PermissionAPI extends LiveModel {
 	
 	
 	private final Context context;
-	private final ActivityLifecycleAPI activityLifecycleAPI;
 	private final SharedPreferences sharedPreferences;
 	
 	private final Map<String, Boolean> permissionNeverAsk;
 
 	@Inject
-	public PermissionAPI(Context context, ActivityLifecycleAPI activityLifecycleAPI) {
+	public PermissionAPI(Context context) {
 		L.DI(this);
 		this.context = context;
-		this.activityLifecycleAPI = activityLifecycleAPI;
 		
 		sharedPreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
 		permissionNeverAsk = new HashMap<>();
@@ -157,7 +154,7 @@ public class PermissionAPI extends LiveModel {
 	 */
 	public boolean isRequiredToAskPermission(){
 	  //TODO: Possible pass PermissionType as argument then see individual if its required
-		L.D(VersionAPI.class, "Is required to Ask Permission -> %s", Build.VERSION.SDK_INT >= Build.VERSION_CODES.M);
+		L.D(this, "Is required to Ask Permission -> %s", Build.VERSION.SDK_INT >= Build.VERSION_CODES.M);
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 	}
 
@@ -187,8 +184,8 @@ public class PermissionAPI extends LiveModel {
 	 * @param permissionType  the type of the permission
 	 * @return true if should explain or false if should not
 	 */
-	public boolean shouldExplainBeforeAsk(PermissionType permissionType){
-		return ActivityCompat.shouldShowRequestPermissionRationale(activityLifecycleAPI.getCurrentActivity(), permissionType.getPermission());
+	public boolean shouldExplainBeforeAsk(PermissionType permissionType, Activity activity){
+		return ActivityCompat.shouldShowRequestPermissionRationale(activity, permissionType.getPermission());
 	}
 
 
@@ -222,7 +219,7 @@ public class PermissionAPI extends LiveModel {
 	// Permission Response Handling
 	///////////////////////////////////////////////////////////////////////////
 
-    public void onRequestPermissionResult(int requestCode, int[] grantResults) {
+    public void onRequestPermissionResult(Activity activity, int requestCode, int[] grantResults) {
 	   
 		for( PermissionType permissionType : PermissionType.values() ){
 			
@@ -244,7 +241,7 @@ public class PermissionAPI extends LiveModel {
 				else{
 					
 					//If it was denied, and i should not explain, means NEVER ASK is TRUE
-					if( !shouldExplainBeforeAsk(permissionType) ){
+					if( !shouldExplainBeforeAsk(permissionType, activity) ){
 						L.I(this, "Permission %s ==> DENIED + NEVER ASK", permissionType.getPermission());
 						permissionNeverAsk.put(permissionType.name(), true);
 						save();

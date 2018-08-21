@@ -1,15 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
-
+    compileSdkVersion Integer.valueOf(compile_sdk_version)
+    buildToolsVersion "${build_tools_version}"
 
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion Integer.valueOf(min_sdk_version)
+        targetSdkVersion Integer.valueOf(target_sdk_version)
+        versionCode Integer.valueOf(version_code)
+        versionName "${version_name}"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -25,19 +25,30 @@ android {
 }
 
 dependencies {
+
+
+    //INCLUDE ALL JAR FROM LIBS FOLDER
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+
+
+    ///////////////////////////////////////
+    /////////// TEST DEPENDENCY ///////////
+    ///////////////////////////////////////
+
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    ///////////////////////////////////////
+    ///////// LIBRARY DEPENDENCY //////////
+    ///////////////////////////////////////
 
-    implementation "com.google.dagger:dagger:2.8"
-    annotationProcessor "com.google.dagger:dagger-compiler:2.8"
+    //Dependency Injection Library
+    implementation "com.google.dagger:dagger:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
 
 
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
-    implementation 'com.github.rafael-juliao:android-framework-mvp:master-SNAPSHOT'
+    implementation "com.github.rafael-juliao:android-framework-mvp:$framework_mvp_version"
 }

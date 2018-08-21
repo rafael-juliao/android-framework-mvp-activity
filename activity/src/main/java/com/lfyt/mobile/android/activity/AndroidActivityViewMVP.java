@@ -60,7 +60,7 @@ public abstract class AndroidActivityViewMVP extends ActivityViewMVP {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionAPI.onRequestPermissionResult(requestCode, grantResults);
+        permissionAPI.onRequestPermissionResult(this, requestCode, grantResults);
     }
 
 
